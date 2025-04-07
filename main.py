@@ -3,6 +3,7 @@ import pandas as pd
 
 app = Flask(__name__)
 
+# Cargar la base de datos CSV
 df = pd.read_csv("baseDatosCandidatos-CSV.csv")
 df.columns = [col.lower().strip() for col in df.columns]
 
@@ -27,7 +28,7 @@ def get_candidatos():
             else:
                 resultados = resultados[resultados[campo].str.contains(valor, case=False, na=False)]
 
-    return jsonify(resultados.to_dict(orient="records"))
+    return jsonify(resultados.fillna("").to_dict(orient="records"))
 
 @app.route("/candidato", methods=["GET"])
 def get_candidato():
@@ -39,7 +40,7 @@ def get_candidato():
     if resultado.empty:
         return jsonify({"error": "Candidato no encontrado"}), 404
 
-    return jsonify(resultado.to_dict(orient="records"))
+    return jsonify(resultado.fillna("").to_dict(orient="records"))
 
 if __name__ == "__main__":
     app.run(debug=True)
