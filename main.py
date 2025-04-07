@@ -3,9 +3,8 @@ import pandas as pd
 
 app = Flask(__name__)
 
-# Cargar la base de datos desde un CSV (puedes cambiar la ruta por la URL en producción)
 df = pd.read_csv("baseDatosCandidatos-CSV.csv")
-df.columns = [col.lower().strip() for col in df.columns]  # Normalizar nombres de columnas
+df.columns = [col.lower().strip() for col in df.columns]
 
 @app.route("/candidatos", methods=["GET"])
 def get_candidatos():
@@ -17,7 +16,6 @@ def get_candidatos():
     }
 
     resultados = df.copy()
-
     for campo, valor in filtros.items():
         if valor:
             if campo == "num_lista_en_boleta":
@@ -38,7 +36,6 @@ def get_candidato():
         return jsonify({"error": "Falta el nombre del candidato"}), 400
 
     resultado = df[df["nombre_candidato"].str.contains(nombre, case=False, na=False)]
-
     if resultado.empty:
         return jsonify({"error": "Candidato no encontrado"}), 404
 
@@ -46,3 +43,4 @@ def get_candidato():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
