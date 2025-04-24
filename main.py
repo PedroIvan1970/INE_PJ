@@ -28,30 +28,7 @@ def get_candidatos():
             else:
                 resultados = resultados[resultados[campo].str.contains(valor, case=False, na=False)]
 
-    return jsonify(resultados.fillna("").to_dict(orient="records"))
-
-@app.route("/candidatos", methods=["GET"])
-def get_candidatos():
-    filtros = {
-        "nombre_candidato": request.args.get("nombre"),
-        "cargo": request.args.get("cargo"),
-        "entidad": request.args.get("entidad"),
-        "num_lista_en_boleta": request.args.get("posicion")
-    }
-
-    resultados = df.copy()
-    for campo, valor in filtros.items():
-        if valor:
-            if campo == "num_lista_en_boleta":
-                try:
-                    valor = int(valor)
-                    resultados = resultados[resultados[campo] == valor]
-                except ValueError:
-                    continue
-            else:
-                resultados = resultados[resultados[campo].str.contains(valor, case=False, na=False)]
-
-    # 💡 Verificamos si la consulta es genérica (solo entidad o incluso sin filtros)
+    # 💡 Mostrar mensaje si solo hay filtro por entidad o ningún filtro
     filtros_aplicados = [k for k, v in filtros.items() if v]
     if filtros_aplicados == ["entidad"] or not filtros_aplicados:
         return jsonify({
